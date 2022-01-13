@@ -1,11 +1,9 @@
 import Model.User;
-import com.mysql.cj.protocol.Resultset;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.sql.*;
 
 public class LoginPage extends JDialog {
@@ -23,15 +21,12 @@ public class LoginPage extends JDialog {
         this.setTitle("Login");
         this.setContentPane(main);
         this.setModal(true);
-        this.setSize(800,600);
         this.setResizable(false);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         // Set JFrame at the middle of the screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (dim.width - 800) / 2;
-        int y = (dim.height - 600) / 2;
-        this.setLocation(x, y);
+       this.setSize(dim.width, dim.height);
 
         // Button listener
         logInButton.addActionListener(new ActionListener() {
@@ -64,11 +59,12 @@ public class LoginPage extends JDialog {
             while (rs.next()){
                 if(username.equals(rs.getString("Username"))){
                     if(password.equals(rs.getString("Password"))){
+                        this.dispose();
+                        HomePage mast = new HomePage(null);
                         userTemp.UserID = rs.getInt("UserID");
                         userTemp.Username = rs.getString("Username");
                         userTemp.Password = rs.getString("Password");
                         userTemp.Role = rs.getString("Role");
-                        this.dispose();
                     }
                 }
             }
@@ -85,11 +81,5 @@ public class LoginPage extends JDialog {
     public static void main(String[] args) {
         LoginPage loginPage = new LoginPage(null);
         User userTest = loginPage.user;
-        if(userTest.UserID != 0) {
-            System.out.println(userTest.UserID);
-            System.out.println(userTest.Username);
-            System.out.println(userTest.Password);
-            System.out.println(userTest.Role);
-        }
     }
 }
