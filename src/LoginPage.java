@@ -1,9 +1,11 @@
 import Model.User;
+import com.mysql.cj.protocol.Resultset;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.sql.*;
 
 public class LoginPage extends JDialog {
@@ -12,6 +14,8 @@ public class LoginPage extends JDialog {
     private JPasswordField Passwordtxt;
     private JButton logInButton;
     public User user;
+
+    Connect conn = Connect.getConnection();
 
     public LoginPage(JFrame parent) {
         // JFrame setting initialization
@@ -54,32 +58,23 @@ public class LoginPage extends JDialog {
     // Method to get data from database
     private User getAuthenticatedUser(String username, String password) {
         User userTemp = new User();
-
-        final String DB_URL = "jdbc:mysql://localhost/gui";
-        final String USERNAME = "root";
-        final String PASSWORD = "";
+        ResultSet  rs = conn.validate("SELECT * FROM msuser");
 
         try {
-            Connection conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-
-            Statement stmt = conn.createStatement();
-            String sql = "SELECT * FROM MsUser WHERE Username=? AND Password=?";
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                user = new User();
-                userTemp.UserID = resultSet.getInt("UserID");
-                userTemp.Username = resultSet.getString("Username");
-                userTemp.Password = resultSet.getString("Password");
-                userTemp.Role = resultSet.getString("Role");
+            while (rs.next()){
+                if(username.equals(rs.getString("Username"))){
+                    if(password.equals(rs.getString("Password"))){
+                        userTemp.UserID = rs.getInt("UserID");
+                        userTemp.Username = rs.getString("Username");
+                        userTemp.Password = rs.getString("Password");
+                        userTemp.Role = rs.getString("Role");
+                        this.dispose();
+                    }
+                }
             }
 
-            stmt.close();
-            conn.close();
+            rs.close();
+            return userTemp;
         } catch (Exception e) {
             e.printStackTrace();
         }
