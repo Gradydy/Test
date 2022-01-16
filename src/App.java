@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class HomePage extends JDialog {
+public class App extends JDialog {
     private JPanel contentpane;
     private JTabbedPane tabbedPane1;
     private JTabbedPane tabbedPane2;
@@ -19,7 +19,7 @@ public class HomePage extends JDialog {
     private JButton insertButton1;
     private JTable table2;
 
-    public HomePage(JFrame parent) {
+    public App(JFrame parent) {
         super (parent);
         add(contentpane);
         this.setTitle("Home");
@@ -36,6 +36,6 @@ public class HomePage extends JDialog {
     }
 
     public static void main(String[] args) {
-        new HomePage(null);
+        new App(null);
     }
 }

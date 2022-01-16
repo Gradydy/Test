@@ -60,7 +60,7 @@ public class LoginPage extends JDialog {
                 if(username.equals(rs.getString("Username"))){
                     if(password.equals(rs.getString("Password"))){
                         this.dispose();
-                        HomePage mast = new HomePage(null);
+                        App mast = new App(null);
                         userTemp.UserID = rs.getInt("UserID");
                         userTemp.Username = rs.getString("Username");
                         userTemp.Password = rs.getString("Password");
