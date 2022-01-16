@@ -1,10 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class App extends JDialog {
+public class HomePage extends JDialog {
     private JPanel contentpane;
+    private JLabel Transaction;
 
-    public App(JFrame parent) {
+    public HomePage(JFrame parent) {
         super (parent);
         add(contentpane);
         this.setTitle("Home");
@@ -15,12 +18,11 @@ public class App extends JDialog {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(dim.width, dim.height);
 
-
         setVisible(true);
 
     }
 
     public static void main(String[] args) {
-        new App(null);
+        new HomePage(null);
     }
 }
