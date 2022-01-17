@@ -35,7 +35,11 @@
           <text value="Master"/>
         </properties>
       </component>
+<<<<<<< HEAD
       <component id="f7bad" class="javax.swing.JLabel">
+=======
+      <component id="f7bad" class="javax.swing.JLabel" binding="Transaction">
+>>>>>>> f33d075a27334c8cdb228384a5b95cf8c61dee91
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
