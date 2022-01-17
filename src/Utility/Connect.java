@@ -1,7 +1,6 @@
-import java.sql.*;
+package Utility;
 
-import com.mysql.cj.protocol.Resultset;
-import com.mysql.cj.xdevapi.Result;
+import java.sql.*;
 
 public final class Connect {
 
@@ -16,7 +15,7 @@ public final class Connect {
     private static Connect connect;
 
     /**
-     * Constructor for Connect class
+     * Constructor for Utility.Connect class
      * <br>
      * This class is used singleton design pattern, so this class only have one instance
      */
@@ -33,13 +32,13 @@ public final class Connect {
     }
 
     /**
-     * This method is used for get instance from Connect class
-     * @return Connect This returns instance from Connect class
+     * This method is used for get instance from Utility.Connect class
+     * @return Utility.Connect This returns instance from Utility.Connect class
      */
     public static synchronized Connect getConnection() {
         /**
          * If the connect is null then:
-         *   - Create the instance from Connect class
+         *   - Create the instance from Utility.Connect class
          *   - Otherwise, just assign the previous instance of this class
          */
         return connect = (connect == null) ? new Connect() : connect;

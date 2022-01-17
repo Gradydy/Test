@@ -1,4 +1,7 @@
+package View;
+
 import Model.User;
+import Utility.Connect;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,12 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
+import static Utility.UserSession.userSession;
+
 public class LoginPage extends JDialog {
     private JPanel main;
     private JTextField Usernametxt;
     private JPasswordField Passwordtxt;
     private JButton logInButton;
-    public User user;
 
     Connect conn = Connect.getConnection();
 
@@ -23,10 +27,12 @@ public class LoginPage extends JDialog {
         this.setModal(true);
         this.setResizable(false);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        Usernametxt.setText("SuperAdmin");
+        Passwordtxt.setText("sa123");
 
-        // Set JFrame at the middle of the screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-       this.setSize(dim.width, dim.height);
+        this.setSize(dim.width, dim.height);
+
 
         // Button listener
         logInButton.addActionListener(new ActionListener() {
@@ -34,11 +40,14 @@ public class LoginPage extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 String username = Usernametxt.getText();
                 String password = String.valueOf(Passwordtxt.getPassword());
+                userSession = new User();
+                getAuthenticatedUser(username, password);
 
-                user = getAuthenticatedUser(username, password);
-
-                if(user.UserID != 0) dispose();
-                if(user.UserID == 0) {
+                if(userSession.UserID != 0) {
+                    dispose();
+                    new HomePage(null);
+                }
+                if(userSession.UserID == 0) {
                     JOptionPane.showMessageDialog(LoginPage.this,
                             "Invalid email or password",
                             "Try Again",
@@ -51,35 +60,32 @@ public class LoginPage extends JDialog {
     }
 
     // Method to get data from database
-    private User getAuthenticatedUser(String username, String password) {
-        User userTemp = new User();
+    private void getAuthenticatedUser(String username, String password) {
         ResultSet  rs = conn.validate("SELECT * FROM msuser");
 
         try {
             while (rs.next()){
                 if(username.equals(rs.getString("Username"))){
                     if(password.equals(rs.getString("Password"))){
-                        this.dispose();
-                        HomePage mast = new HomePage(null);
-                        userTemp.UserID = rs.getInt("UserID");
-                        userTemp.Username = rs.getString("Username");
-                        userTemp.Password = rs.getString("Password");
-                        userTemp.Role = rs.getString("Role");
+                        userSession.UserID = rs.getInt("UserID");
+                        userSession.RoleID = rs.getInt("RoleID");
+                        userSession.Name = rs.getString("Name");
+                        userSession.Username = rs.getString("Username");
+                        userSession.Password = rs.getString("Password");
                     }
                 }
             }
 
             rs.close();
-            return userTemp;
+            return;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return userTemp;
+        return;
     }
 
     public static void main(String[] args) {
         LoginPage loginPage = new LoginPage(null);
-        User userTest = loginPage.user;
     }
 }
