@@ -93,14 +93,6 @@
                   <text value=""/>
                 </properties>
               </component>
-              <component id="83f54" class="javax.swing.JTable" binding="AdminTbl">
-                <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="5" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="d82b4" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -154,6 +146,19 @@
                   </model>
                 </properties>
               </component>
+              <scrollpane id="1df3c">
+                <constraints>
+                  <grid row="7" column="0" row-span="1" col-span="5" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="e7812" class="javax.swing.JTable" binding="AdminTbl">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="929c8" binding="SalesTab" layout-manager="GridLayoutManager" row-count="8" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -236,14 +241,6 @@
                   <text value="Insert"/>
                 </properties>
               </component>
-              <component id="d9a69" class="javax.swing.JTable" binding="TableSales">
-                <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="5ca09" class="javax.swing.JButton" binding="updateButton2" default-binding="true">
                 <constraints>
                   <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -260,6 +257,19 @@
                   <text value="Delete"/>
                 </properties>
               </component>
+              <scrollpane id="b6ded">
+                <constraints>
+                  <grid row="7" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="7cd0e" class="javax.swing.JTable" binding="SalesTbl">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="523ee" binding="DistributorTab" layout-manager="GridLayoutManager" row-count="10" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -358,14 +368,6 @@
                   <text value="Insert"/>
                 </properties>
               </component>
-              <component id="87701" class="javax.swing.JTable" binding="TableDistributor">
-                <constraints>
-                  <grid row="9" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="f7062" class="javax.swing.JButton" binding="updateButton1" default-binding="true">
                 <constraints>
                   <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -382,6 +384,19 @@
                   <text value="Delete"/>
                 </properties>
               </component>
+              <scrollpane id="fa34d">
+                <constraints>
+                  <grid row="9" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="ca7aa" class="javax.swing.JTable" binding="DistibutorTbl">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
           <grid id="27578" binding="ItemTab" layout-manager="GridLayoutManager" row-count="10" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -482,14 +497,6 @@
                   <text value="Insert"/>
                 </properties>
               </component>
-              <component id="a3624" class="javax.swing.JTable" binding="TableItem">
-                <constraints>
-                  <grid row="9" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="c7808" class="javax.swing.JButton" binding="updateButton" default-binding="true">
                 <constraints>
                   <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -506,6 +513,19 @@
                   <text value="Delete"/>
                 </properties>
               </component>
+              <scrollpane id="7b371">
+                <constraints>
+                  <grid row="9" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="5f21e" class="javax.swing.JTable" binding="ItemTbl">
+                    <constraints/>
+                    <properties/>
+                  </component>
+                </children>
+              </scrollpane>
             </children>
           </grid>
         </children>

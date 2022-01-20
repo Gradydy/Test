@@ -34,7 +34,6 @@ public class MasterPage extends JDialog {
     private JTextField textField7;
     private JTextField textField8;
     private JButton insertButton1;
-    private JTable TableSales;
 
     private JTextField textField9;
     private JTextField textField10;
@@ -43,14 +42,12 @@ public class MasterPage extends JDialog {
     private JPanel DistributorTab;
     private JTextField textField13;
     private JButton insertButton2;
-    private JTable TableDistributor;
     private JTextField textField14;
     private JTextField textField15;
     private JTextField textField16;
     private JTextField textField17;
     private JTextField textField18;
     private JButton insertButton3;
-    private JTable TableItem;
     private JButton updateButton;
     private JButton deleteButton;
     private JButton updateButton1;
@@ -63,6 +60,9 @@ public class MasterPage extends JDialog {
     private JPanel ItemTab;
     private JTextField AdminPhonetxt;
     private JComboBox AdminRolecb;
+    private JTable SalesTbl;
+    private JTable DistibutorTbl;
+    private JTable ItemTbl;
 
     // Variable buatan
     Connect con = Connect.getConnection();
