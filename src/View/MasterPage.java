@@ -1,5 +1,6 @@
 package View;
 
+import Model.AdminTable;
 import Model.User;
 import Utility.Connect;
 
@@ -8,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import static Utility.UserSession.userSession;
 
@@ -61,6 +64,10 @@ public class MasterPage extends JDialog {
     private JTextField AdminPhonetxt;
     private JComboBox AdminRolecb;
 
+    // Variable buatan
+    Connect con = Connect.getConnection();
+    ArrayList<User> users = new ArrayList<User>();
+
     public MasterPage(JFrame parent) {
         super(parent);
         this.setTitle("Master Page");
@@ -72,32 +79,68 @@ public class MasterPage extends JDialog {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(dim.width, dim.height);
 
+        // Get semua user yang ada di database
+        getAllUser();
 
-        Connect con = Connect.getConnection();
+        // Setup JTable
+        AdminTable adminTableModel = new AdminTable(users);
+        AdminTbl.setModel(adminTableModel);
+        AdminTbl.setAutoCreateRowSorter(true);
 
-        // Admin button listener
+        // Initialize Button listener
+        adminBtnListener(adminTableModel);
+
+        this.setVisible(true);
+    }
+
+    public void adminBtnListener(AdminTable adminTableModelTemp) {
+        // Insert
         AdminInsertBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String in = "INSERT INTO MsUser" +
+                String query = "INSERT INTO MsUser" +
                         "(AuditedUserID, RoleID, Name, Phone, Username, Password) " +
                         "VALUES(?, (SELECT RoleID FROM MsRole WHERE RoleName LIKE ?), ?, ?, ?, ?)";
-        		PreparedStatement ps = con.preparedStatement(in);
-        		try {
-        			ps.setInt(1, userSession.UserID);
-        			ps.setString(2, AdminRolecb.getSelectedItem().toString());
+                PreparedStatement ps = con.preparedStatement(query);
+                try {
+                    ps.setInt(1, userSession.UserID);
+                    ps.setString(2, AdminRolecb.getSelectedItem().toString());
                     ps.setString(3, AdminNametxt.getText());
                     ps.setString(4, AdminPhonetxt.getText());
                     ps.setString(5, AdminUsernametxt.getText());
                     ps.setString(6, AdminPasswordtxt.getText());
-        			ps.executeUpdate();
-        		} catch (Exception e) {
-        			// TODO: handle exception
-        			e.printStackTrace();
-        		}
+                    if(ps.executeUpdate() > 0) {
+                        getAllUser();
+                        adminTableModelTemp.fireTableDataChanged();
+                    }
+
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                }
             }
         });
+    }
 
-        this.setVisible(true);
+    public void getAllUser() {
+        String query = "SELECT MsUser.UserID, Name, RoleName, Name, Phone, Username " +
+                "FROM MsUser " +
+                "JOIN MsRole ON MsUser.RoleID = MsRole.RoleID";
+        ResultSet rs = con.executeQuery(query);
+        try {
+            while(rs.next()) {
+                User userTemp = new User();
+                userTemp.UserID = rs.getInt(1);
+                userTemp.Name = rs.getString(2);
+                userTemp.RoleName = rs.getString(3);
+                userTemp.Name = rs.getString(4);
+                userTemp.Phone = rs.getString(5);
+                userTemp.Username = rs.getString(6);
+                users.add(userTemp);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
     }
 }

@@ -7,6 +7,7 @@ public class User {
     public int UserID;
     public int RoleID;
     public String Name;
+    public String RoleName;
     public String Phone;
     public String Username;
     public String Password;
