@@ -121,9 +121,9 @@ public class MasterPage extends JDialog {
         // Update item
         AdminUpdateBtn.addActionListener(ae -> {
             if(validateInputAdmin() == false) return;
-            String query = "INSERT INTO MsUser" +
-                    "(AuditedUserID, RoleID, Name, Phone, Username, Password) " +
-                    "VALUES(?, (SELECT RoleID FROM MsRole WHERE RoleName LIKE ?), ?, ?, ?, ?)";
+            String query = "UPDATE MsUser " +
+                    "SET AuditedUserID = ?, RoleID = (SELECT RoleID FROM MsRole WHERE RoleName LIKE ?), Name = ?, Phone = ?, Username = ?, Password = ? " +
+                    "WHERE UserID = ?";
             PreparedStatement ps = con.preparedStatement(query);
             try {
                 ps.setInt(1, userSession.UserID);
@@ -132,6 +132,7 @@ public class MasterPage extends JDialog {
                 ps.setString(4, AdminPhonetxt.getText());
                 ps.setString(5, AdminUsernametxt.getText());
                 ps.setString(6, AdminPasswordtxt.getText());
+                ps.setInt(7, selectedUser.UserID);
                 if(ps.executeUpdate() > 0) {
                     clearAdminField();
                     getAllUser();
