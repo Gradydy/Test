@@ -2,33 +2,42 @@ package View;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Transaction extends JDialog {
-    private JTabbedPane Transaction;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
-    private JButton searchButton;
-    private JTextField textField4;
-    private JTextField textField5;
-    private JTextField textField6;
-    private JTextField textField7;
-    private JTextField textField8;
-    private JTextField textField9;
-    private JTextField textField10;
-    private JButton searchButton1;
-    private JTextField textField11;
-    private JTextField textField12;
-    private JTextField textField13;
-    private JTextField textField14;
-    private JTextField textField15;
-    private JButton createButton;
-    private JPanel pane;
+    private JTabbedPane tab;
+    private JTextField PurchasingItemNametxt;
+    private JTextField PurchasingDistributortxt;
+    private JTextField PurchasingTransactionIdtxt;
+    private JButton PurchasingSearchButton;
+    private JTextField PurchasingDate2txt;
+    private JTextField PurchasingDatetxt;
+    private JTextField SalesItemNametxt;
+    private JTextField SalesCostumerNametxt;
+    private JTextField SalesTransactionIdtxt;
+    private JTextField SalesDatetxt;
+    private JTextField SalesDate2txt;
+    private JButton SalesSearchButton;
+    private JTextField OrderCostumerNametxt;
+    private JTextField OrderCostumerPhoneNumbertxt;
+    private JTextField OrderItemTypetxt;
+    private JTextField OrderQuantitytxt;
+    private JTextField OrderPaymentTypetxt;
+    private JButton OrderCreateButton;
+    private JPanel main;
+    private JPanel TransactionTab;
+    private JPanel PurchasingTab;
+    private JPanel SalesTab;
+    private JPanel OrderTab;
+    private JTable Purchasingtbl;
+    private JTable Salestbl;
+    private JTable Ordertbl;
 
     public Transaction(JFrame parent){
         super(parent);
         this.setTitle("Master Page");
-        this.setContentPane(pane);
+        this.setContentPane(main);
         this.setModal(true);
         this.setResizable(false);
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -38,6 +47,25 @@ public class Transaction extends JDialog {
         this.setSize(dim.width, dim.height);
         this.setVisible(true);
 
+        PurchasingSearchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+
+        SalesSearchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        OrderCreateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
 
     public static void main(String[] args) {
