@@ -3,17 +3,17 @@ package Model;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
-public class DistributorTable extends AbstractTableModel {
-    private final String[] COLUMNS = {"Representative Name", "Company", "Email", "Phone Number","Description"};
-    private ArrayList<Distributor> distributors;
+public class ItemTable extends AbstractTableModel {
+    private final String[] COLUMNS = {"Item Name", "Item Type", "Quantity", "Item Price", "Description"};
+    private ArrayList<Item> items;
 
-    public DistributorTable(ArrayList<Distributor> distributors) {
-        this.distributors = distributors;
+    public ItemTable(ArrayList<Item> items) {
+        this.items = items;
     }
 
     @Override
     public int getRowCount() {
-        return distributors.size();
+        return items.size();
     }
 
     @Override
@@ -25,15 +25,15 @@ public class DistributorTable extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return distributors.get(rowIndex).Representative;
+                return items.get(rowIndex).ItemName;
             case 1:
-                return distributors.get(rowIndex).Company;
+                return items.get(rowIndex).ItemType;
             case 2:
-                return distributors.get(rowIndex).Email;
+                return items.get(rowIndex).Quantity;
             case 3:
-                return distributors.get(rowIndex).Phone;
+                return items.get(rowIndex).Price;
             case 4:
-                return distributors.get(rowIndex).Description;
+                return items.get(rowIndex).Description;
             default:
                 return "-";
         }
@@ -43,7 +43,6 @@ public class DistributorTable extends AbstractTableModel {
     public String getColumnName(int column) {
         return COLUMNS[column];
     }
-
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {

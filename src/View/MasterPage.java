@@ -1,9 +1,6 @@
 package View;
 
-import Model.AdminTable;
-import Model.Distributor;
-import Model.DistributorTable;
-import Model.User;
+import Model.*;
 import Utility.Connect;
 
 import javax.swing.*;
@@ -33,38 +30,36 @@ public class MasterPage extends JDialog {
     private JTable AdminTbl;
 
     private JPanel DistributorTab;
-    private JTextField DistributorRepresentative;
-    private JTextField DistributorPhone;
-    private JTextField DistributorEmail;
-    private JTextField DistributorCompany;
-    private JTextField DistributorDescription;
+    private JTextField DistributorRepresentativetxt;
+    private JTextField DistributorPhonetxt;
+    private JTextField DistributorEmailtxt;
+    private JTextField DistributorCompanytxt;
+    private JTextField DistributorDescriptiontxt;
     private JButton DistributorInsertBtn;
     private JButton DistributorUpdateBtn;
     private JButton DistributorDeleteBtn;
     private JTable DistributorTbl;
 
     private JPanel ItemTab;
-    private JTextField textField14;
-    private JTextField textField15;
-    private JTextField textField16;
-    private JTextField textField17;
-    private JTextField textField18;
-    private JButton insertButton3;
-    private JButton updateButton;
-    private JButton deleteButton;
-
-
-
+    private JTextField ItemNametxt;
+    private JTextField ItemQuantitytxt;
+    private JTextField ItemTypetxt;
+    private JTextField ItemPricetxt;
+    private JTextField ItemDescriptiontxt;
+    private JButton ItemInsertBtn;
+    private JButton ItemUpdateBtn;
+    private JButton ItemDeleteBtn;
     private JTable ItemTbl;
 
     // Variable buatan
     Connect con = Connect.getConnection();
     ArrayList<User> users = new ArrayList<User>();
     ArrayList<Distributor> distributors = new ArrayList<Distributor>();
+    ArrayList<Item> items = new ArrayList<Item>();
     private int selectedIndex;
     private User selectedUser;
     private Distributor selectedDistributor;
-
+    private Item selectedItem;
 
     public MasterPage(JFrame parent) {
         super(parent);
@@ -75,7 +70,8 @@ public class MasterPage extends JDialog {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(dim.width, dim.height);
+        this.setLocation(dim.width/2 - dim.width/4, dim.height/2 - dim.height/4);
+        this.setSize(dim.width/2, dim.height/2);
 
         // Setup Admin Tab
         getAllUser();
@@ -94,9 +90,17 @@ public class MasterPage extends JDialog {
         DistributorTbl.setModel(distributorTableModel);
         DistributorTbl.setAutoCreateRowSorter(true);
 
+        // Setup Item Tab
+        getAllItem();
+        clearItemField();
+        ItemTable itemTableModel = new ItemTable(items);
+        ItemTbl.setModel(itemTableModel);
+        ItemTbl.setAutoCreateRowSorter(true);
+
         // Initialize Button listener
         adminBtnListener(adminTableModel);
         distributorBtnListener(distributorTableModel);
+        itemBtnListener(itemTableModel);
 
         this.setVisible(true);
     }
@@ -284,11 +288,11 @@ public class MasterPage extends JDialog {
             PreparedStatement ps = con.preparedStatement(query);
             try {
                 ps.setInt(1, userSession.UserID);
-                ps.setString(2, DistributorRepresentative.getText());
-                ps.setString(3, DistributorCompany.getText());
-                ps.setString(4, DistributorEmail.getText());
-                ps.setString(5, DistributorPhone.getText());
-                ps.setString(6, DistributorDescription.getText());
+                ps.setString(2, DistributorRepresentativetxt.getText());
+                ps.setString(3, DistributorCompanytxt.getText());
+                ps.setString(4, DistributorEmailtxt.getText());
+                ps.setString(5, DistributorPhonetxt.getText());
+                ps.setString(6, DistributorDescriptiontxt.getText());
                 if(ps.executeUpdate() > 0) {
                     clearDistributorField();
                     getAllDistributor();
@@ -310,11 +314,11 @@ public class MasterPage extends JDialog {
             PreparedStatement ps = con.preparedStatement(query);
             try {
                 ps.setInt(1, userSession.UserID);
-                ps.setString(2, DistributorRepresentative.getText());
-                ps.setString(3, DistributorCompany.getText());
-                ps.setString(4, DistributorEmail.getText());
-                ps.setString(5, DistributorPhone.getText());
-                ps.setString(6, DistributorDescription.getText());
+                ps.setString(2, DistributorRepresentativetxt.getText());
+                ps.setString(3, DistributorCompanytxt.getText());
+                ps.setString(4, DistributorEmailtxt.getText());
+                ps.setString(5, DistributorPhonetxt.getText());
+                ps.setString(6, DistributorDescriptiontxt.getText());
                 ps.setInt(7, selectedDistributor.DistributorID);
                 if(ps.executeUpdate() > 0) {
                     clearDistributorField();
@@ -355,11 +359,11 @@ public class MasterPage extends JDialog {
                 selectedIndex = DistributorTbl.convertRowIndexToModel(DistributorTbl.getSelectedRow());
                 selectedDistributor = distributors.get(selectedIndex);
                 if(selectedDistributor != null) {
-                    DistributorRepresentative.setText(selectedDistributor.Representative);
-                    DistributorCompany.setText(selectedDistributor.Company);
-                    DistributorPhone.setText(selectedDistributor.Phone);
-                    DistributorEmail.setText(selectedDistributor.Email);
-                    DistributorDescription.setText(selectedDistributor.Description);
+                    DistributorRepresentativetxt.setText(selectedDistributor.Representative);
+                    DistributorCompanytxt.setText(selectedDistributor.Company);
+                    DistributorPhonetxt.setText(selectedDistributor.Phone);
+                    DistributorEmailtxt.setText(selectedDistributor.Email);
+                    DistributorDescriptiontxt.setText(selectedDistributor.Description);
                     DistributorInsertBtn.setEnabled(false);
                     DistributorDeleteBtn.setEnabled(true);
                     DistributorUpdateBtn.setEnabled(true);
@@ -391,9 +395,9 @@ public class MasterPage extends JDialog {
     }
 
     private boolean validateInputDistributor() {
-        if(DistributorEmail.getText().isEmpty() ||
-                DistributorPhone.getText().isEmpty() || DistributorRepresentative.getText().isEmpty() ||
-                DistributorCompany.getText().isEmpty()) {
+        if(DistributorEmailtxt.getText().isEmpty() ||
+                DistributorPhonetxt.getText().isEmpty() || DistributorRepresentativetxt.getText().isEmpty() ||
+                DistributorCompanytxt.getText().isEmpty()) {
             JOptionPane.showMessageDialog(MasterPage.this,
                     "Please fill all field",
                     "Ok",
@@ -404,16 +408,161 @@ public class MasterPage extends JDialog {
     }
 
     private void clearDistributorField() {
-        DistributorRepresentative.setText("");
-        DistributorCompany.setText("");
-        DistributorEmail.setText("");
-        DistributorPhone.setText("");
-        DistributorDescription.setText("");
+        DistributorRepresentativetxt.setText("");
+        DistributorCompanytxt.setText("");
+        DistributorEmailtxt.setText("");
+        DistributorPhonetxt.setText("");
+        DistributorDescriptiontxt.setText("");
         DistributorTbl.clearSelection();
         DistributorInsertBtn.setEnabled(true);
         DistributorDeleteBtn.setEnabled(false);
         DistributorUpdateBtn.setEnabled(false);
         selectedDistributor = null;
+        selectedIndex = -1;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Item">
+    private void itemBtnListener(ItemTable itemTableModelTemp) {
+        // Insert
+        ItemInsertBtn.addActionListener(ae -> {
+            if(validateInputItem() == false) return;
+            String query = "INSERT INTO MsItem" +
+                    "(AuditedUserID, ItemName, ItemType, Quantity, Price, Description) " +
+                    "VALUES(?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = con.preparedStatement(query);
+            try {
+                ps.setInt(1, userSession.UserID);
+                ps.setString(2, ItemNametxt.getText());
+                ps.setString(3, ItemTypetxt.getText());
+                ps.setString(4, ItemQuantitytxt.getText());
+                ps.setString(5, ItemPricetxt.getText());
+                ps.setString(6, ItemDescriptiontxt.getText());
+                if(ps.executeUpdate() > 0) {
+                    clearItemField();
+                    getAllItem();
+                    itemTableModelTemp.fireTableDataChanged();
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        });
+
+        // Update item
+        ItemUpdateBtn.addActionListener(ae -> {
+            if(validateInputItem() == false) return;
+            String query = "UPDATE MsItem " +
+                    "SET AuditedUserID = ?, ItemName = ?, ItemType = ?, Quantity = ?, Price = ?, Description = ? " +
+                    "WHERE ItemID = ?";
+            PreparedStatement ps = con.preparedStatement(query);
+            try {
+                ps.setInt(1, userSession.UserID);
+                ps.setString(2, ItemNametxt.getText());
+                ps.setString(3, ItemTypetxt.getText());
+                ps.setString(4, ItemQuantitytxt.getText());
+                ps.setString(5, ItemPricetxt.getText());
+                ps.setString(6, ItemDescriptiontxt.getText());
+                ps.setInt(7, selectedItem.ItemID);
+                if(ps.executeUpdate() > 0) {
+                    clearItemField();
+                    getAllItem();
+                    itemTableModelTemp.fireTableDataChanged();
+                }
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        });
+
+        // Delete item
+        ItemDeleteBtn.addActionListener(ae -> {
+            int reply = JOptionPane.showConfirmDialog(null, "Are you sure want to delete this item?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.NO_OPTION) {
+                return;
+            }
+            String query = "DELETE FROM MsItem WHERE ItemID = ?";
+            PreparedStatement ps = con.preparedStatement(query);
+            try {
+                ps.setInt(1, selectedItem.ItemID);
+                if(ps.executeUpdate() > 0) {
+                    clearItemField();
+                    getAllItem();
+                    itemTableModelTemp.fireTableDataChanged();
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+        });
+
+        // Select row
+        ItemTbl.getSelectionModel().addListSelectionListener(e -> {
+            if(!ItemTbl.getSelectionModel().isSelectionEmpty()) {
+                selectedIndex = ItemTbl.convertRowIndexToModel(ItemTbl.getSelectedRow());
+                selectedItem = items.get(selectedIndex);
+                if(selectedItem != null) {
+                    ItemNametxt.setText(selectedItem.ItemName);
+                    ItemTypetxt.setText(selectedItem.ItemType);
+                    ItemQuantitytxt.setText(String.valueOf(selectedItem.Quantity));
+                    ItemPricetxt.setText(String.valueOf(selectedItem.Price));
+                    ItemDescriptiontxt.setText(selectedItem.Description);
+                    ItemInsertBtn.setEnabled(false);
+                    ItemDeleteBtn.setEnabled(true);
+                    ItemUpdateBtn.setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private void getAllItem() {
+        items.removeAll(items);
+        String query = "SELECT ItemID, ItemName, ItemType, Quantity, Price, Description " +
+                "FROM MsItem";
+        ResultSet rs = con.executeQuery(query);
+        try {
+            while(rs.next()) {
+                Item item = new Item();
+                item.ItemID = rs.getInt(1);
+                item.ItemName = rs.getString(2);
+                item.ItemType = rs.getString(3);
+                item.Quantity = rs.getInt(4);
+                item.Price = rs.getInt(5);
+                item.Description = rs.getString(6);
+                items.add(item);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+    }
+
+    private boolean validateInputItem() {
+        if(ItemNametxt.getText().isEmpty() ||
+                ItemTypetxt.getText().isEmpty() || ItemQuantitytxt.getText().isEmpty() ||
+                ItemPricetxt.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(MasterPage.this,
+                    "Please fill all field",
+                    "Ok",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    private void clearItemField() {
+        ItemNametxt.setText("");
+        ItemTypetxt.setText("");
+        ItemQuantitytxt.setText("");
+        ItemPricetxt.setText("");
+        ItemDescriptiontxt.setText("");
+        ItemTbl.clearSelection();
+        ItemInsertBtn.setEnabled(true);
+        ItemDeleteBtn.setEnabled(false);
+        ItemUpdateBtn.setEnabled(false);
+        selectedItem = null;
         selectedIndex = -1;
     }
     //</editor-fold>
