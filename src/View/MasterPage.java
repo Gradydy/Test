@@ -5,6 +5,8 @@ import Model.User;
 import Utility.Connect;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,6 +69,9 @@ public class MasterPage extends JDialog {
     // Variable buatan
     Connect con = Connect.getConnection();
     ArrayList<User> users = new ArrayList<User>();
+    private int selectedIndex;
+    private User selectedUser;
+
 
     public MasterPage(JFrame parent) {
         super(parent);
@@ -79,10 +84,12 @@ public class MasterPage extends JDialog {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(dim.width, dim.height);
 
-        // Get semua user yang ada di database
+        // Setup Admin Tab
         getAllUser();
-
-        // Setup JTable
+        DefaultComboBoxModel<String> roleComboModel =
+                new DefaultComboBoxModel<>(getAllRole().toArray(new String[0]));
+        AdminRolecb.setModel(roleComboModel);
+        AdminUpdateBtn.setEnabled(false);
         AdminTable adminTableModel = new AdminTable(users);
         AdminTbl.setModel(adminTableModel);
         AdminTbl.setAutoCreateRowSorter(true);
@@ -93,11 +100,13 @@ public class MasterPage extends JDialog {
         this.setVisible(true);
     }
 
-    public void adminBtnListener(AdminTable adminTableModelTemp) {
+    // Method to list admin btn listener
+    private void adminBtnListener(AdminTable adminTableModelTemp) {
         // Insert
         AdminInsertBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                if(validateInputAdmin() == false) return;
                 String query = "INSERT INTO MsUser" +
                         "(AuditedUserID, RoleID, Name, Phone, Username, Password) " +
                         "VALUES(?, (SELECT RoleID FROM MsRole WHERE RoleName LIKE ?), ?, ?, ?, ?)";
@@ -110,6 +119,7 @@ public class MasterPage extends JDialog {
                     ps.setString(5, AdminUsernametxt.getText());
                     ps.setString(6, AdminPasswordtxt.getText());
                     if(ps.executeUpdate() > 0) {
+                        clearAdminField();
                         getAllUser();
                         adminTableModelTemp.fireTableDataChanged();
                     }
@@ -120,10 +130,30 @@ public class MasterPage extends JDialog {
                 }
             }
         });
+
+        // Select row
+        AdminTbl.getSelectionModel().addListSelectionListener(e -> {
+            if(!AdminTbl.getSelectionModel().isSelectionEmpty()) {
+                selectedIndex = AdminTbl.convertRowIndexToModel(AdminTbl.getSelectedRow());
+                selectedUser = users.get(selectedIndex);
+                if(selectedUser != null) {
+                    System.out.println(selectedUser.Password);
+                    AdminNametxt.setText(selectedUser.Name);
+                    AdminPhonetxt.setText(selectedUser.Name);
+                    AdminUsernametxt.setText(selectedUser.Username);
+                    AdminPasswordtxt.setText(selectedUser.Password);
+                    AdminPassword2txt.setText(selectedUser.Password);
+                    AdminRolecb.setSelectedItem(selectedUser.RoleName);
+                    AdminInsertBtn.setEnabled(false);
+                    AdminUpdateBtn.setEnabled(true);
+                }
+            }
+        });
     }
 
-    public void getAllUser() {
-        String query = "SELECT MsUser.UserID, Name, RoleName, Name, Phone, Username " +
+    private void getAllUser() {
+        users.removeAll(users);
+        String query = "SELECT MsUser.UserID, Name, RoleName, Name, Phone, Username, Password " +
                 "FROM MsUser " +
                 "JOIN MsRole ON MsUser.RoleID = MsRole.RoleID";
         ResultSet rs = con.executeQuery(query);
@@ -136,11 +166,62 @@ public class MasterPage extends JDialog {
                 userTemp.Name = rs.getString(4);
                 userTemp.Phone = rs.getString(5);
                 userTemp.Username = rs.getString(6);
+                userTemp.Password = rs.getString(7);
                 users.add(userTemp);
             }
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
         }
+    }
+
+    private ArrayList<String> getAllRole() {
+        String query = "SELECT RoleName FROM MsRole";
+        ArrayList<String> roles = new ArrayList<String>();
+        ResultSet rs = con.executeQuery(query);
+        try {
+            while(rs.next()) {
+                if(rs.getString(1).equals("SuperAdmin")) continue;
+                roles.add(rs.getString(1));
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return roles;
+    }
+
+    private boolean validateInputAdmin() {
+        if(AdminNametxt.getText().isEmpty() ||
+                AdminPhonetxt.getText().isEmpty() || AdminUsernametxt.getText().isEmpty() ||
+                AdminPasswordtxt.getText().isEmpty() || AdminPassword2txt.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(MasterPage.this,
+                    "Please fill all field",
+                    "Ok",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        else if(!AdminPasswordtxt.getText().equals(AdminPassword2txt.getText())) {
+            JOptionPane.showMessageDialog(MasterPage.this,
+                    "Password didn't match",
+                    "Ok",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void clearAdminField() {
+        AdminNametxt.setText("");
+        AdminPasswordtxt.setText("");
+        AdminPassword2txt.setText("");
+        AdminUsernametxt.setText("");
+        AdminPhonetxt.setText("");
+        AdminTbl.clearSelection();
+        AdminInsertBtn.setEnabled(true);
+        AdminUpdateBtn.setEnabled(false);
+        selectedUser = null;
+        selectedIndex = -1;
     }
 }
