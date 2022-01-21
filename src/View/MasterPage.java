@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static Utility.UserSession.userSession;
@@ -50,7 +51,7 @@ public class MasterPage extends JDialog {
     private JButton ItemUpdateBtn;
     private JButton ItemDeleteBtn;
     private JTable ItemTbl;
-    private JButton searchButton;
+    private JButton AdminSearchBtn;
     private JButton searchButton1;
     private JButton searchButton2;
 
@@ -136,6 +137,38 @@ public class MasterPage extends JDialog {
             }
         });
 
+        //search
+        AdminSearchBtn.addActionListener(ae ->{;
+            users.removeAll(users);
+            String query = "SELECT MsUser.UserID, Name, RoleName, Phone, Username, Password "  +
+                    "FROM MsUser " +
+                    "JOIN MsRole ON MsUser.RoleID = MsRole.RoleID " +
+                    "WHERE Name = ? AND Username = ?";
+            PreparedStatement ps = con.preparedStatement(query);
+            ResultSet rs = null;
+            try {
+                ps.setString(1,AdminNametxt.getText());
+                ps.setString(2,AdminUsernametxt.getText());
+                rs  = ps.executeQuery(query);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                while(rs.next()) {
+                    User userTemp = new User();
+                    userTemp.UserID = rs.getInt(1);
+                    userTemp.Name = rs.getString(2);
+                    userTemp.RoleName = rs.getString(3);
+                    userTemp.Phone = rs.getString(4);
+                    userTemp.Username = rs.getString(5);
+                    userTemp.Password = rs.getString(6);
+                    users.add(userTemp);
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+        }});
+
         // Update item
         AdminUpdateBtn.addActionListener(ae -> {
             if(validateInputAdmin() == false) return;
@@ -206,7 +239,7 @@ public class MasterPage extends JDialog {
 
     private void getAllUser() {
         users.removeAll(users);
-        String query = "SELECT MsUser.UserID, Name, RoleName, Name, Phone, Username, Password " +
+        String query = "SELECT MsUser.UserID, Name, RoleName, Phone, Username, Password " +
                 "FROM MsUser " +
                 "JOIN MsRole ON MsUser.RoleID = MsRole.RoleID";
         ResultSet rs = con.executeQuery(query);
@@ -216,10 +249,9 @@ public class MasterPage extends JDialog {
                 userTemp.UserID = rs.getInt(1);
                 userTemp.Name = rs.getString(2);
                 userTemp.RoleName = rs.getString(3);
-                userTemp.Name = rs.getString(4);
-                userTemp.Phone = rs.getString(5);
-                userTemp.Username = rs.getString(6);
-                userTemp.Password = rs.getString(7);
+                userTemp.Phone = rs.getString(4);
+                userTemp.Username = rs.getString(5);
+                userTemp.Password = rs.getString(6);
                 users.add(userTemp);
             }
         } catch (Exception e) {
