@@ -137,23 +137,32 @@ public class MasterPage extends JDialog {
             }
         });
 
-        //search
-        AdminSearchBtn.addActionListener(ae ->{;
+        // Search
+        AdminSearchBtn.addActionListener(ae -> {
             users.removeAll(users);
             String query = "SELECT MsUser.UserID, Name, RoleName, Phone, Username, Password "  +
                     "FROM MsUser " +
                     "JOIN MsRole ON MsUser.RoleID = MsRole.RoleID " +
-                    "WHERE Name = ? AND Username = ?";
+                    "WHERE Name LIKE COALESCE(?, Name) AND Username LIKE COALESCE(?, Username)";
             PreparedStatement ps = con.preparedStatement(query);
             ResultSet rs = null;
             try {
-                ps.setString(1,AdminNametxt.getText());
-                ps.setString(2,AdminUsernametxt.getText());
-                rs  = ps.executeQuery(query);
+                if(AdminNametxt.getText().isEmpty())
+                    ps.setNull(1, java.sql.Types.INTEGER);
+                else
+                    ps.setString(1 , "%" + AdminNametxt.getText() + "%");
+
+                if(AdminUsernametxt.getText().isEmpty())
+                    ps.setNull(2, java.sql.Types.INTEGER);
+                else
+                    ps.setString(2 , "%" + AdminUsernametxt.getText() + "%");
+
+                rs = ps.executeQuery();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             try {
+                boolean flag = false;
                 while(rs.next()) {
                     User userTemp = new User();
                     userTemp.UserID = rs.getInt(1);
@@ -163,11 +172,18 @@ public class MasterPage extends JDialog {
                     userTemp.Username = rs.getString(5);
                     userTemp.Password = rs.getString(6);
                     users.add(userTemp);
+                    flag = true;
                 }
+                if(flag)
+                    adminTableModelTemp.fireTableDataChanged();
+
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
-        }});
+            }
+            clearAdminField();
+
+        });
 
         // Update item
         AdminUpdateBtn.addActionListener(ae -> {
