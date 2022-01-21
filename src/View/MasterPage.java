@@ -52,8 +52,8 @@ public class MasterPage extends JDialog {
     private JButton ItemDeleteBtn;
     private JTable ItemTbl;
     private JButton AdminSearchBtn;
-    private JButton searchButton1;
-    private JButton searchButton2;
+    private JButton DistributorBtn;
+    private JButton ItemSearchBtn;
 
     // Variable buatan
     Connect con = Connect.getConnection();
@@ -333,7 +333,7 @@ public class MasterPage extends JDialog {
         // Insert
         DistributorInsertBtn.addActionListener(ae -> {
             if(validateInputDistributor() == false) return;
-            String query = "INSERT INTO MsDistributor" +
+            String query = "INSERT INTO MsDistributor " +
                     "(AuditedUserID, Representative, Company, Email, Phone, Description) " +
                     "VALUES(?, ?, ?, ?, ?, ?)";
             PreparedStatement ps = con.preparedStatement(query);
@@ -354,6 +354,54 @@ public class MasterPage extends JDialog {
                 // TODO: handle exception
                 e.printStackTrace();
             }
+        });
+
+        // Search distributor
+        DistributorBtn.addActionListener(ae -> {
+            distributors.removeAll(distributors);
+
+            String query = "SELECT DistributorID, Representative, Company, Email, Phone, Description " +
+                    "FROM MsDistributor " +
+                    "WHERE Representative LIKE COALESCE(?, Representative) AND Company LIKE COALESCE(?, Company)";
+            PreparedStatement ps = con.preparedStatement(query);
+            ResultSet rs = null;
+            try {
+                if(DistributorRepresentativetxt.getText().isEmpty())
+                    ps.setNull(1, java.sql.Types.INTEGER);
+                else
+                    ps.setString(1 , "%" + DistributorRepresentativetxt.getText() + "%");
+
+                if(DistributorCompanytxt.getText().isEmpty())
+                    ps.setNull(2, java.sql.Types.INTEGER);
+                else
+                    ps.setString(2 , "%" + DistributorCompanytxt.getText() + "%");
+
+                rs = ps.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                boolean flag = false;
+                while(rs.next()) {
+                    Distributor distribtorTemp = new Distributor();
+                    distribtorTemp.DistributorID = rs.getInt(1);
+                    distribtorTemp.Representative = rs.getString(2);
+                    distribtorTemp.Company = rs.getString(3);
+                    distribtorTemp.Email = rs.getString(4);
+                    distribtorTemp.Phone = rs.getString(5);
+                    distribtorTemp.Description = rs.getString(6);
+                    distributors.add(distribtorTemp);
+                    flag = true;
+                }
+                if(flag)
+                    distributorTableModelTemp.fireTableDataChanged();
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+            clearAdminField();
+
         });
 
         // Update distributor
@@ -499,6 +547,55 @@ public class MasterPage extends JDialog {
                 // TODO: handle exception
                 e.printStackTrace();
             }
+        });
+
+        // Search Item
+        ItemSearchBtn.addActionListener(ae -> {
+            items.removeAll(items);
+
+            String query = "SELECT ItemID, ItemName, ItemType, Quantity, Price, Description " +
+                    "FROM MsItem " +
+                    "WHERE ItemName LIKE COALESCE(?, ItemName) AND ItemType LIKE COALESCE(?, ItemType)";
+            PreparedStatement ps = con.preparedStatement(query);
+            ResultSet rs = null;
+            try {
+                if(ItemNametxt.getText().isEmpty())
+                    ps.setNull(1, java.sql.Types.INTEGER);
+                else
+                    ps.setString(1 , "%" + ItemNametxt.getText() + "%");
+
+                if(ItemTypetxt.getText().isEmpty())
+                    ps.setNull(2, java.sql.Types.INTEGER);
+                else
+                    ps.setString(2 , "%" + ItemTypetxt.getText() + "%");
+
+                rs = ps.executeQuery();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            try {
+                boolean flag = false;
+                while(rs.next()) {
+                    Item itemTemp = new Item();
+                    itemTemp.ItemID = rs.getInt(1);
+                    itemTemp.ItemName = rs.getString(2);
+                    itemTemp.ItemType = rs.getString(3);
+                    itemTemp.Quantity = rs.getInt(4);
+                    itemTemp.Price = rs.getInt(5);
+                    itemTemp.Description = rs.getString(6);
+                    items.add(itemTemp);
+                    flag = true;
+                }
+                if(flag)
+                    itemTableModelTemp.fireTableDataChanged();
+
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
+            clearAdminField();
+            clearAdminField();
+
         });
 
         // Update item
