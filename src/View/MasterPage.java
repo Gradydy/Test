@@ -50,6 +50,9 @@ public class MasterPage extends JDialog {
     private JButton ItemUpdateBtn;
     private JButton ItemDeleteBtn;
     private JTable ItemTbl;
+    private JButton searchButton;
+    private JButton searchButton1;
+    private JButton searchButton2;
 
     // Variable buatan
     Connect con = Connect.getConnection();
